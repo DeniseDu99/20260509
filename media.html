@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>媒体管理 - 管理后台</title>
+    <!-- Google tag (gtag.js) --> 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S9SR60CCYT"></script> 
+    <script> 
+      window.dataLayer = window.dataLayer || []; 
+      function gtag(){dataLayer.push(arguments);} 
+      gtag('js', new Date()); 
+     
+      gtag('config', 'G-S9SR60CCYT'); 
+    </script>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <style>
+        /* 文件上传预览样式 */
+        .file-preview-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .file-preview-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            background-color: #f9f9f9;
+            position: relative;
+        }
+        
+        .file-preview-item img {
+            max-width: 100%;
+            max-height: 100px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+        
+        .file-preview-item i {
+            font-size: 48px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .file-info {
+            text-align: left;
+        }
+        
+        .file-name {
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-size {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 上传进度条样式 */
+        .upload-progress {
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #4CAF50;
+            width: 0%;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            margin-top: 5px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        /* 文件图标样式 */
+        .file-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            font-size: 48px;
+            color: #666;
+        }
+        
+        .file-icon-large {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            font-size: 72px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>管理后台</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">返回网站</a></li>
+                    <li><a href="index.html">控制面板</a></li>
+                    <li><a href="add-blog.html">添加博客</a></li>
+                    <li><a href="media.html" class="active">媒体管理</a></li>
+                    <li><a href="messages.html">留言管理</a></li>
+                    <li><a href="settings.html">网站设置</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- 媒体管理部分 -->
+    <section class="media-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>媒体管理</h2>
+                <p>上传和管理您的媒体文件</p>
+            </div>
+            
+            <div class="media-actions">
+                <button class="btn-primary" id="uploadMediaBtn"><i class="fas fa-upload"></i> 上传新媒体</button>
+                <div class="media-filter">
+                    <label for="mediaFilter">筛选：</label>
+                    <select id="mediaFilter">
+                        <option value="all">所有媒体</option>
+                        <option value="image">图片</option>
+                        <option value="document">文档</option>
+                        <option value="video">视频</option>
+                    </select>
+                </div>
+                <div class="media-search">
+                    <input type="text" id="mediaSearch" placeholder="搜索媒体...">
+                    <button type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            
+            <!-- 上传媒体对话框 -->
+            <div class="upload-dialog" id="uploadDialog">
+                <div class="upload-dialog-content">
+                    <div class="upload-dialog-header">
+                        <h3>上传媒体</h3>
+                        <button class="close-btn" id="closeUploadDialog">&times;</button>
+                    </div>
+                    <div class="upload-dialog-body">
+                        <form id="uploadForm">
+                            <div class="form-group">
+                                <label for="mediaFiles">选择文件</label>
+                                <input type="file" id="mediaFiles" name="mediaFiles" multiple accept="image/*,video/*,.pdf,.doc,.docx">
+                            </div>
+                            <div class="upload-preview" id="uploadPreview">
+                                <p>未选择文件</p>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" id="cancelUpload">取消</button>
+                                <button type="submit" class="btn-primary">上传</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 媒体库 -->
+            <div class="media-library">
+                <div class="media-grid">
+                    <!-- 示例媒体项 -->
+                    <div class="media-item" data-type="image">
+                        <div class="media-thumbnail">
+                            <img src="../images/blog1.svg" alt="预防头虱">
+                        </div>
+                        <div class="media-info">
+                            <div class="media-title">blog1.svg</div>
+                            <div class="media-meta">SVG图片 • 2023-10-15</div>
+                        </div>
+                        <div class="media-actions">
+                            <button class="action-btn view-btn" title="查看"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn edit-btn" title="编辑"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-btn" title="删除"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="media-item" data-type="image">
+                        <div class="media-thumbnail">
+                            <img src="../images/blog2.svg" alt="电子头虱机使用指南">
+                        </div>
+                        <div class="media-info">
+                            <div class="media-title">blog2.svg</div>
+                            <div class="media-meta">SVG图片 • 2023-09-28</div>
+                        </div>
+                        <div class="media-actions">
+                            <button class="action-btn view-btn" title="查看"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn edit-btn" title="编辑"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-btn" title="删除"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="media-item" data-type="image">
+                        <div class="media-thumbnail">
+                            <img src="../images/blog3.svg" alt="头虱常见误解">
+                        </div>
+                        <div class="media-info">
+                            <div class="media-title">blog3.svg</div>
+                            <div class="media-meta">SVG图片 • 2023-09-10</div>
+                        </div>
+                        <div class="media-actions">
+                            <button class="action-btn view-btn" title="查看"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn edit-btn" title="编辑"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-btn" title="删除"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="media-item" data-type="image">
+                        <div class="media-thumbnail">
+                            <img src="../images/blog4.svg" alt="化学vs物理治疗">
+                        </div>
+                        <div class="media-info">
+                            <div class="media-title">blog4.svg</div>
+                            <div class="media-meta">SVG图片 • 2023-08-22</div>
+                        </div>
+                        <div class="media-actions">
+                            <button class="action-btn view-btn" title="查看"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn edit-btn" title="编辑"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-btn" title="删除"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="media-item" data-type="image">
+                        <div class="media-thumbnail">
+                            <img src="../images/product-main.svg" alt="产品主图">
+                        </div>
+                        <div class="media-info">
+                            <div class="media-title">product-main.svg</div>
+                            <div class="media-meta">SVG图片 • 2023-07-15</div>
+                        </div>
+                        <div class="media-actions">
+                            <button class="action-btn view-btn" title="查看"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn edit-btn" title="编辑"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-btn" title="删除"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="media-item" data-type="image">
+                        <div class="media-thumbnail">
+                            <img src="../images/step1.svg" alt="步骤1">
+                        </div>
+                        <div class="media-info">
+                            <div class="media-title">step1.svg</div>
+                            <div class="media-meta">SVG图片 • 2023-07-10</div>
+                        </div>
+                        <div class="media-actions">
+                            <button class="action-btn view-btn" title="查看"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn edit-btn" title="编辑"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-btn" title="删除"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pagination">
+                    <button class="page-btn prev-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 媒体预览对话框 -->
+    <div class="media-preview-dialog" id="mediaPreviewDialog">
+        <div class="media-preview-content">
+            <div class="media-preview-header">
+                <h3 id="previewTitle">媒体预览</h3>
+                <button class="close-btn" id="closePreviewDialog">&times;</button>
+            </div>
+            <div class="media-preview-body">
+                <div class="media-preview-image" id="previewImage">
+                    <!-- 预览图片将在这里显示 -->
+                </div>
+                <div class="media-preview-info">
+                    <div class="info-group">
+                        <label>文件名：</label>
+                        <span id="previewFileName">filename.svg</span>
+                    </div>
+                    <div class="info-group">
+                        <label>类型：</label>
+                        <span id="previewFileType">SVG图片</span>
+                    </div>
+                    <div class="info-group">
+                        <label>上传日期：</label>
+                        <span id="previewUploadDate">2023-10-15</span>
+                    </div>
+                    <div class="info-group">
+                        <label>文件大小：</label>
+                        <span id="previewFileSize">24KB</span>
+                    </div>
+                    <div class="info-group">
+                        <label>尺寸：</label>
+                        <span id="previewDimensions">800 x 600 px</span>
+                    </div>
+                    <div class="info-group">
+                        <label>URL：</label>
+                        <input type="text" id="previewUrl" value="../images/blog1.svg" readonly>
+                        <button class="copy-btn" id="copyUrlBtn"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="media-preview-footer">
+                <button class="btn-secondary" id="closePreview">关闭</button>
+                <button class="btn-primary" id="useMedia">使用此媒体</button>
+                <button class="btn-outline btn-danger" id="deleteMedia">删除</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 媒体编辑对话框 -->
+    <div class="media-preview-dialog" id="mediaEditDialog">
+        <div class="media-preview-content">
+            <div class="media-preview-header">
+                <h3 id="editTitle">编辑媒体</h3>
+                <button class="close-btn" id="closeEditDialog">&times;</button>
+            </div>
+            <div class="media-preview-body">
+                <div class="media-preview-image" id="editImage">
+                    <!-- 编辑图片将在这里显示 -->
+                </div>
+                <div class="media-preview-info">
+                    <div class="info-group">
+                        <label for="editFileName">文件名：</label>
+                        <input type="text" id="editFileName" value="filename.svg">
+                    </div>
+                    <div class="info-group">
+                        <label>类型：</label>
+                        <span id="editFileType">SVG图片</span>
+                    </div>
+                    <div class="info-group">
+                        <label>上传日期：</label>
+                        <span id="editUploadDate">2023-10-15</span>
+                    </div>
+                    <div class="info-group">
+                        <label>文件大小：</label>
+                        <span id="editFileSize">24KB</span>
+                    </div>
+                    <div class="info-group">
+                        <label>尺寸：</label>
+                        <span id="editDimensions">800 x 600 px</span>
+                    </div>
+                    <div class="info-group">
+                        <label for="editAltText">替代文本：</label>
+                        <input type="text" id="editAltText" value="">
+                    </div>
+                    <div class="info-group">
+                        <label for="editUrl">URL：</label>
+                        <input type="text" id="editUrl" value="../images/blog1.svg">
+                    </div>
+                </div>
+            </div>
+            <div class="media-preview-footer">
+                <button class="btn-secondary" id="cancelEdit">取消</button>
+                <button class="btn-primary" id="saveMedia">保存更改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Head Lice Removal Expert</h2>
+                    <p>管理后台</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Head Lice Removal Expert. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="admin-script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 上传对话框功能
+            const uploadDialog = document.getElementById('uploadDialog');
+            const uploadMediaBtn = document.getElementById('uploadMediaBtn');
+            const closeUploadDialog = document.getElementById('closeUploadDialog');
+            const cancelUpload = document.getElementById('cancelUpload');
+            
+            uploadMediaBtn.addEventListener('click', function() {
+                uploadDialog.style.display = 'flex';
+            });
+            
+            closeUploadDialog.addEventListener('click', function() {
+                uploadDialog.style.display = 'none';
+            });
+            
+            cancelUpload.addEventListener('click', function() {
+                uploadDialog.style.display = 'none';
+            });
+            
+            // 媒体预览对话框功能
+            const mediaPreviewDialog = document.getElementById('mediaPreviewDialog');
+            const closePreviewDialog = document.getElementById('closePreviewDialog');
+            const closePreview = document.getElementById('closePreview');
+            const viewBtns = document.querySelectorAll('.view-btn');
+            
+            viewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const mediaItem = this.closest('.media-item');
+                    const imgSrc = mediaItem.querySelector('img').src;
+                    const title = mediaItem.querySelector('.media-title').textContent;
+                    
+                    document.getElementById('previewTitle').textContent = '预览: ' + title;
+                    document.getElementById('previewFileName').textContent = title;
+                    document.getElementById('previewImage').innerHTML = `<img src="${imgSrc}" alt="${title}">`;
+                    document.getElementById('previewUrl').value = imgSrc;
+                    
+                    mediaPreviewDialog.style.display = 'flex';
+                });
+            });
+            
+            closePreviewDialog.addEventListener('click', function() {
+                mediaPreviewDialog.style.display = 'none';
+            });
+            
+            closePreview.addEventListener('click', function() {
+                mediaPreviewDialog.style.display = 'none';
+            });
+            
+            // 复制URL功能
+            const copyUrlBtn = document.getElementById('copyUrlBtn');
+            copyUrlBtn.addEventListener('click', function() {
+                const urlInput = document.getElementById('previewUrl');
+                urlInput.select();
+                document.execCommand('copy');
+                alert('URL已复制到剪贴板！');
+            });
+            
+            // 媒体编辑对话框功能
+            const mediaEditDialog = document.getElementById('mediaEditDialog');
+            const closeEditDialog = document.getElementById('closeEditDialog');
+            const cancelEdit = document.getElementById('cancelEdit');
+            const saveMedia = document.getElementById('saveMedia');
+            const editBtns = document.querySelectorAll('.edit-btn');
+            let currentEditItem = null;
+            
+            editBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const mediaItem = this.closest('.media-item');
+                    currentEditItem = mediaItem;
+                    const imgSrc = mediaItem.querySelector('img').src;
+                    const imgAlt = mediaItem.querySelector('img').alt || '';
+                    const title = mediaItem.querySelector('.media-title').textContent;
+                    
+                    document.getElementById('editTitle').textContent = '编辑: ' + title;
+                    document.getElementById('editFileName').value = title;
+                    document.getElementById('editImage').innerHTML = `<img src="${imgSrc}" alt="${imgAlt}">`;
+                    document.getElementById('editUrl').value = imgSrc;
+                    document.getElementById('editAltText').value = imgAlt;
+                    
+                    // 填充其他编辑字段
+                    const metaText = mediaItem.querySelector('.media-meta').textContent;
+                    const fileType = metaText.split('•')[0].trim();
+                    const uploadDate = metaText.split('•')[1].trim();
+                    
+                    document.getElementById('editFileType').textContent = fileType;
+                    document.getElementById('editUploadDate').textContent = uploadDate;
+                    document.getElementById('editFileSize').textContent = '24KB'; // 示例值
+                    document.getElementById('editDimensions').textContent = '800 x 600 px'; // 示例值
+                    
+                    mediaEditDialog.style.display = 'flex';
+                });
+            });
+            
+            closeEditDialog.addEventListener('click', function() {
+                mediaEditDialog.style.display = 'none';
+            });
+            
+            cancelEdit.addEventListener('click', function() {
+                mediaEditDialog.style.display = 'none';
+            });
+            
+            // 保存媒体编辑功能
+            saveMedia.addEventListener('click', function() {
+                if (currentEditItem) {
+                    // 获取编辑后的值
+                    const newFileName = document.getElementById('editFileName').value;
+                    const newAltText = document.getElementById('editAltText').value;
+                    const newUrl = document.getElementById('editUrl').value;
+                    
+                    // 更新媒体项
+                    currentEditItem.querySelector('.media-title').textContent = newFileName;
+                    currentEditItem.querySelector('img').alt = newAltText;
+                    
+                    // 如果URL已更改，更新图片源
+                    if (currentEditItem.querySelector('img').src !== newUrl) {
+                        currentEditItem.querySelector('img').src = newUrl;
+                    }
+                    
+                    // 显示成功消息
+                    alert('媒体信息已成功保存！');
+                    
+                    // 关闭编辑对话框
+                    mediaEditDialog.style.display = 'none';
+                }
+            });
+            
+            // 媒体筛选功能
+            const mediaFilter = document.getElementById('mediaFilter');
+            const mediaItems = document.querySelectorAll('.media-item');
+            
+            mediaFilter.addEventListener('change', function() {
+                const filterValue = this.value;
+                
+                mediaItems.forEach(item => {
+                    if (filterValue === 'all' || item.dataset.type === filterValue) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            // 媒体搜索功能
+            const mediaSearch = document.getElementById('mediaSearch');
+            
+            mediaSearch.addEventListener('input', function() {
+                const searchValue = this.value.toLowerCase();
+                
+                mediaItems.forEach(item => {
+                    const title = item.querySelector('.media-title').textContent.toLowerCase();
+                    
+                    if (title.includes(searchValue)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            // 文件选择预览功能
+            const mediaFilesInput = document.getElementById('mediaFiles');
+            const uploadPreview = document.getElementById('uploadPreview');
+            
+            mediaFilesInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    uploadPreview.innerHTML = '';
+                    
+                    // 创建文件预览列表
+                    const fileList = document.createElement('div');
+                    fileList.className = 'file-preview-list';
+                    
+                    for (let i = 0; i < this.files.length; i++) {
+                        const file = this.files[i];
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-preview-item';
+                        
+                        // 根据文件类型创建不同的预览
+                        if (file.type.startsWith('image/')) {
+                            const img = document.createElement('img');
+                            img.src = URL.createObjectURL(file);
+                            img.onload = function() {
+                                URL.revokeObjectURL(this.src);
+                            };
+                            fileItem.appendChild(img);
+                        } else {
+                            const icon = document.createElement('i');
+                            if (file.type.includes('pdf')) {
+                                icon.className = 'fas fa-file-pdf';
+                            } else if (file.type.includes('word') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                                icon.className = 'fas fa-file-word';
+                            } else if (file.type.startsWith('video/')) {
+                                icon.className = 'fas fa-file-video';
+                            } else {
+                                icon.className = 'fas fa-file';
+                            }
+                            fileItem.appendChild(icon);
+                        }
+                        
+                        const fileInfo = document.createElement('div');
+                        fileInfo.className = 'file-info';
+                        fileInfo.innerHTML = `
+                            <div class="file-name">${file.name}</div>
+                            <div class="file-size">${formatFileSize(file.size)}</div>
+                        `;
+                        fileItem.appendChild(fileInfo);
+                        
+                        fileList.appendChild(fileItem);
+                    }
+                    
+                    uploadPreview.appendChild(fileList);
+                } else {
+                    uploadPreview.innerHTML = '<p>未选择文件</p>';
+                }
+            });
+            
+            // 格式化文件大小
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // 上传表单处理
+            document.getElementById('uploadForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const files = mediaFilesInput.files;
+                if (files.length === 0) {
+                    alert('请选择至少一个文件进行上传');
+                    return;
+                }
+                
+                // 模拟上传进度
+                uploadPreview.innerHTML = '<div class="upload-progress"><div class="progress-bar"></div><div class="progress-text">上传中... 0%</div></div>';
+                const progressBar = uploadPreview.querySelector('.progress-bar');
+                const progressText = uploadPreview.querySelector('.progress-text');
+                
+                let progress = 0;
+                const interval = setInterval(function() {
+                    progress += 5;
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = `上传中... ${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        progressText.textContent = '上传完成！';
+                        
+                        // 模拟添加新上传的媒体到媒体库
+                        setTimeout(function() {
+                            // 创建新的媒体项
+                            for (let i = 0; i < files.length; i++) {
+                                const file = files[i];
+                                addNewMediaItem(file);
+                            }
+                            
+                            // 关闭上传对话框
+                            uploadDialog.style.display = 'none';
+                            // 重置上传表单
+                            document.getElementById('uploadForm').reset();
+                            uploadPreview.innerHTML = '<p>未选择文件</p>';
+                            
+                            alert('文件上传成功！');
+                        }, 500);
+                    }
+                }, 100);
+            });
+            
+            // 添加新媒体项到媒体库
+            function addNewMediaItem(file) {
+                const mediaGrid = document.querySelector('.media-grid');
+                const mediaItem = document.createElement('div');
+                mediaItem.className = 'media-item';
+                
+                // 设置媒体类型
+                if (file.type.startsWith('image/')) {
+                    mediaItem.dataset.type = 'image';
+                } else if (file.type.includes('pdf') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                    mediaItem.dataset.type = 'document';
+                } else if (file.type.startsWith('video/')) {
+                    mediaItem.dataset.type = 'video';
+                }
+                
+                // 创建缩略图
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'media-thumbnail';
+                
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.alt = file.name;
+                    thumbnail.appendChild(img);
+                } else {
+                    const icon = document.createElement('div');
+                    icon.className = 'file-icon';
+                    if (file.type.includes('pdf')) {
+                        icon.innerHTML = '<i class="fas fa-file-pdf"></i>';
+                    } else if (file.type.includes('word') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                        icon.innerHTML = '<i class="fas fa-file-word"></i>';
+                    } else if (file.type.startsWith('video/')) {
+                        icon.innerHTML = '<i class="fas fa-file-video"></i>';
+                    } else {
+                        icon.innerHTML = '<i class="fas fa-file"></i>';
+                    }
+                    thumbnail.appendChild(icon);
+                }
+                
+                // 创建媒体信息
+                const info = document.createElement('div');
+                info.className = 'media-info';
+                
+                const title = document.createElement('div');
+                title.className = 'media-title';
+                title.textContent = file.name;
+                
+                const meta = document.createElement('div');
+                meta.className = 'media-meta';
+                
+                let fileType = '文件';
+                if (file.type.startsWith('image/')) {
+                    fileType = file.type.split('/')[1].toUpperCase() + '图片';
+                } else if (file.type.includes('pdf')) {
+                    fileType = 'PDF文档';
+                } else if (file.type.includes('word') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                    fileType = 'Word文档';
+                } else if (file.type.startsWith('video/')) {
+                    fileType = '视频';
+                }
+                
+                const today = new Date();
+                const date = today.getFullYear() + '-' + 
+                             String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                             String(today.getDate()).padStart(2, '0');
+                
+                meta.textContent = fileType + ' • ' + date;
+                
+                info.appendChild(title);
+                info.appendChild(meta);
+                
+                // 创建操作按钮
+                const actions = document.createElement('div');
+                actions.className = 'media-actions';
+                actions.innerHTML = `
+                    <button class="action-btn view-btn" title="查看"><i class="fas fa-eye"></i></button>
+                    <button class="action-btn edit-btn" title="编辑"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn delete-btn" title="删除"><i class="fas fa-trash"></i></button>
+                `;
+                
+                // 添加所有元素到媒体项
+                mediaItem.appendChild(thumbnail);
+                mediaItem.appendChild(info);
+                mediaItem.appendChild(actions);
+                
+                // 添加到媒体网格的开头
+                mediaGrid.insertBefore(mediaItem, mediaGrid.firstChild);
+                
+                // 为新添加的按钮添加事件监听器
+                const viewBtn = mediaItem.querySelector('.view-btn');
+                viewBtn.addEventListener('click', function() {
+                    const imgSrc = mediaItem.querySelector('img')?.src || '';
+                    const title = mediaItem.querySelector('.media-title').textContent;
+                    
+                    document.getElementById('previewTitle').textContent = '预览: ' + title;
+                    document.getElementById('previewFileName').textContent = title;
+                    
+                    if (imgSrc) {
+                        document.getElementById('previewImage').innerHTML = `<img src="${imgSrc}" alt="${title}">`;
+                    } else {
+                        // 对于非图片文件，显示图标
+                        const fileType = mediaItem.dataset.type;
+                        let iconClass = 'fa-file';
+                        if (fileType === 'document') iconClass = 'fa-file-pdf';
+                        if (fileType === 'video') iconClass = 'fa-file-video';
+                        
+                        document.getElementById('previewImage').innerHTML = `<div class="file-icon-large"><i class="fas ${iconClass}"></i></div>`;
+                    }
+                    
+                    document.getElementById('previewUrl').value = imgSrc || '#';
+                    
+                    mediaPreviewDialog.style.display = 'flex';
+                });
+                
+                const editBtn = mediaItem.querySelector('.edit-btn');
+                editBtn.addEventListener('click', function() {
+                    currentEditItem = mediaItem;
+                    const imgSrc = mediaItem.querySelector('img')?.src || '';
+                    const imgAlt = mediaItem.querySelector('img')?.alt || '';
+                    const title = mediaItem.querySelector('.media-title').textContent;
+                    
+                    document.getElementById('editTitle').textContent = '编辑: ' + title;
+                    document.getElementById('editFileName').value = title;
+                    
+                    if (imgSrc) {
+                        document.getElementById('editImage').innerHTML = `<img src="${imgSrc}" alt="${imgAlt}">`;
+                    } else {
+                        // 对于非图片文件，显示图标
+                        const fileType = mediaItem.dataset.type;
+                        let iconClass = 'fa-file';
+                        if (fileType === 'document') iconClass = 'fa-file-pdf';
+                        if (fileType === 'video') iconClass = 'fa-file-video';
+                        
+                        document.getElementById('editImage').innerHTML = `<div class="file-icon-large"><i class="fas ${iconClass}"></i></div>`;
+                    }
+                    
+                    document.getElementById('editUrl').value = imgSrc || '#';
+                    document.getElementById('editAltText').value = imgAlt;
+                    
+                    // 填充其他编辑字段
+                    const metaText = mediaItem.querySelector('.media-meta').textContent;
+                    const fileType = metaText.split('•')[0].trim();
+                    const uploadDate = metaText.split('•')[1].trim();
+                    
+                    document.getElementById('editFileType').textContent = fileType;
+                    document.getElementById('editUploadDate').textContent = uploadDate;
+                    document.getElementById('editFileSize').textContent = formatFileSize(file.size);
+                    
+                    // 对于图片，尝试获取尺寸
+                    if (file.type.startsWith('image/')) {
+                        const img = new Image();
+                        img.onload = function() {
+                            document.getElementById('editDimensions').textContent = `${this.width} x ${this.height} px`;
+                        };
+                        img.src = imgSrc;
+                    } else {
+                        document.getElementById('editDimensions').textContent = 'N/A';
+                    }
+                    
+                    mediaEditDialog.style.display = 'flex';
+                });
+                
+                const deleteBtn = mediaItem.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', function() {
+                    const title = mediaItem.querySelector('.media-title').textContent;
+                    
+                    if (confirm(`确定要删除 ${title} 吗？此操作无法撤销。`)) {
+                        mediaItem.remove();
+                        alert('媒体文件已删除！');
+                    }
+                });
+            }
+            
+            // 删除媒体功能
+            const deleteMedia = document.getElementById('deleteMedia');
+            deleteMedia.addEventListener('click', function() {
+                if (confirm('确定要删除此媒体文件吗？此操作无法撤销。')) {
+                    alert('媒体文件已删除！');
+                    mediaPreviewDialog.style.display = 'none';
+                }
+            });
+            
+            // 为所有删除按钮添加事件监听器
+            const deleteBtns = document.querySelectorAll('.delete-btn');
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const mediaItem = this.closest('.media-item');
+                    const title = mediaItem.querySelector('.media-title').textContent;
+                    
+                    if (confirm(`确定要删除 ${title} 吗？此操作无法撤销。`)) {
+                        mediaItem.remove();
+                        alert('媒体文件已删除！');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

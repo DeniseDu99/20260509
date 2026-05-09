@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>留言数据测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>留言数据测试工具</h1>
+        
+        <div class="test-section">
+            <h2>当前localStorage中的留言数据</h2>
+            <button class="btn" id="viewMessagesBtn">查看留言数据</button>
+            <button class="btn btn-danger" id="clearMessagesBtn">清除留言数据</button>
+            <div class="result" id="messagesResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>添加测试留言数据</h2>
+            <button class="btn btn-success" id="addTestMessageBtn">添加测试留言</button>
+            <div class="result" id="addResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>localStorage调试信息</h2>
+            <button class="btn" id="debugLocalStorageBtn">查看所有localStorage键</button>
+            <div class="result" id="debugResult"></div>
+        </div>
+        
+        <a href="messages.html" class="back-link">返回留言管理页面</a>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 查看留言数据按钮
+            const viewMessagesBtn = document.getElementById('viewMessagesBtn');
+            const messagesResult = document.getElementById('messagesResult');
+            
+            viewMessagesBtn.addEventListener('click', function() {
+                const savedMessages = localStorage.getItem('customerMessages');
+                
+                if (!savedMessages) {
+                    messagesResult.innerHTML = '<p>未找到留言数据</p>';
+                    return;
+                }
+                
+                try {
+                    const messages = JSON.parse(savedMessages);
+                    messagesResult.innerHTML = `<p>找到 ${messages.length} 条留言</p><pre>${JSON.stringify(messages, null, 2)}</pre>`;
+                } catch (error) {
+                    messagesResult.innerHTML = `<p>解析留言数据时出错: ${error.message}</p><pre>${savedMessages}</pre>`;
+                }
+            });
+            
+            // 清除留言数据按钮
+            const clearMessagesBtn = document.getElementById('clearMessagesBtn');
+            
+            clearMessagesBtn.addEventListener('click', function() {
+                if (confirm('确定要清除所有留言数据吗？此操作不可撤销！')) {
+                    localStorage.removeItem('customerMessages');
+                    messagesResult.innerHTML = '<p>留言数据已清除</p>';
+                }
+            });
+            
+            // 添加测试留言按钮
+            const addTestMessageBtn = document.getElementById('addTestMessageBtn');
+            const addResult = document.getElementById('addResult');
+            
+            addTestMessageBtn.addEventListener('click', function() {
+                const testMessage = {
+                    name: '测试用户',
+                    phone: '13800138000',
+                    email: 'test@example.com',
+                    address: '测试地址',
+                    product: 'Silver',
+                    quantity: '1',
+                    message: '这是一条测试留言',
+                    isDistributor: true,
+                    paymentMethod: 'T/T Payment',
+                    timestamp: new Date().toISOString(),
+                    status: 'new'
+                };
+                
+                // 保存到localStorage
+                let customerMessages = [];
+                const savedMessages = localStorage.getItem('customerMessages');
+                
+                if (savedMessages) {
+                    try {
+                        customerMessages = JSON.parse(savedMessages);
+                    } catch (error) {
+                        addResult.innerHTML = `<p>解析现有留言数据时出错: ${error.message}</p>`;
+                        return;
+                    }
+                }
+                
+                customerMessages.push(testMessage);
+                localStorage.setItem('customerMessages', JSON.stringify(customerMessages));
+                
+                addResult.innerHTML = `<p>测试留言已添加</p><pre>${JSON.stringify(testMessage, null, 2)}</pre>`;
+            });
+            
+            // 调试localStorage按钮
+            const debugLocalStorageBtn = document.getElementById('debugLocalStorageBtn');
+            const debugResult = document.getElementById('debugResult');
+            
+            debugLocalStorageBtn.addEventListener('click', function() {
+                const keys = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    let size = 0;
+                    if (value) {
+                        size = new Blob([value]).size;
+                    }
+                    keys.push({
+                        key: key,
+                        size: `${(size / 1024).toFixed(2)} KB`,
+                        preview: value ? (value.length > 100 ? value.substring(0, 100) + '...' : value) : ''
+                    });
+                }
+                
+                debugResult.innerHTML = `<p>找到 ${keys.length} 个localStorage键</p><pre>${JSON.stringify(keys, null, 2)}</pre>`;
+            });
+        });
+    </script>
+</body>
+</html>

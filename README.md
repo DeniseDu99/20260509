@@ -1,71 +1,60 @@
-# Head Lice Removal Expert Website
+# Blog Management Backend User Guide
 
-This is a professional head lice prevention product sales website, with a modern, clean, and professional design, featuring product showcases, feature introductions, customer reviews, FAQ, and purchase forms.
+## Overview
 
-## Website Structure
+This management backend allows you to manage the website's blog content, including adding new blog posts, editing existing articles, and deleting unwanted posts. All blog content is written in English to ensure an internationalized user experience.
 
-The website includes the following main sections:
+## Features
 
-1. **Navigation Bar** - Provides quick access links to various parts of the website
-2. **Hero Section** - Displays the main product image and introduction
-3. **Product Features** - Detailed introduction of the six main features of the product
-4. **How It Works** - Three-step tutorial explaining how to use the product
-5. **Testimonials** - Displays real user feedback
-6. **Pricing Plans** - Offers three different purchase packages
-7. **FAQ** - Answers potential customers' concerns
-8. **Contact Form** - Collects user information for purchases and agency applications
-9. **Footer** - Contains website navigation and social media links
+### Dashboard
 
-## File Description
+The dashboard page (index.html) provides an overview of the website content, including:
 
-- `index.html` - Main website HTML file
-- `styles.css` - Website stylesheet
-- `script.js` - Website interactive functionality JavaScript file
-- `images/` - Images folder
-  - `placeholder.svg` - Image placeholder
+- List of recently published blog posts
+- Quick access links to add new articles
+- Entry points for media management and website settings (features to be developed)
+
+### Adding Blog Posts
+
+The add blog post page (add-blog.html) allows you to create new blog content:
+
+1. Fill in the blog title (in English)
+2. Select article category
+3. Add tags (separated by English commas)
+4. Upload featured image
+5. Write article summary (displayed on the blog list page)
+6. Use the simple rich text editor to write the complete article content
+7. Click the "Publish Post" button to publish the article
 
 ## Usage Instructions
 
-### Local Preview
+### Accessing the Management Backend
 
-1. Simply open the `index.html` file in your browser to preview the website
+1. Open your browser and visit `/admin/index.html`
+2. Navigate to the dashboard or add blog post page
 
-### Server Deployment
+### Adding a New Blog Post
 
-1. Upload all files to your website server
-2. Ensure the file structure remains unchanged
-3. Visit your domain to view the website
+1. Click the "Add New Post" button
+2. Fill in all required fields (title, category, summary, and content)
+3. Upload a featured image (recommended size: 800x400 pixels)
+4. Use the editor toolbar to format article content
+5. Click the "Publish Post" button to publish the article
 
-## Customization Guide
+### Editing or Deleting Articles
 
-### Replacing Images
+In the recent articles list on the dashboard page:
 
-1. Place your product images in the `images` folder
-2. Update image paths in `index.html`
-
-### Modifying Content
-
-1. Edit the text content in the `index.html` file
-2. Adjust prices, product descriptions, and other information as needed
-
-### Style Adjustments
-
-1. Modify colors, fonts, and other styles in the `styles.css` file
-2. The main color scheme can be found at the top of the CSS file (currently blue #3498db)
-
-## Form Handling
-
-Currently, the form displays a success message after submission but does not send data. To implement actual form submission functionality, you need to:
-
-1. Create a server-side script to process form data
-2. Modify the form submission code in the `script.js` file to send data to your server
+- Click the "Edit" button to edit existing articles
+- Click the "Delete" button to delete articles (a confirmation prompt will appear)
 
 ## Notes
 
-- The website has a responsive design that adapts to various screen sizes
-- All interactive features (such as FAQ accordion, smooth scrolling, etc.) are implemented in JavaScript
-- Be sure to replace all placeholder images and sample text content
+- All blog content must be written in English
+- Images should be named in English, avoid using Chinese or special characters
+- Regularly backup blog content to ensure data security
+- Preview articles before publishing to ensure correct formatting and content
 
-## Contact Information
+## Technical Support
 
-For technical support or custom development, please contact the website developer.
+If you encounter any issues while using the management backend, please contact the website administrator or technical support team.
