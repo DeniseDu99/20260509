@@ -1,0 +1,8 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#e6f2ff"/>
+  <rect x="200" y="100" width="400" height="400" rx="20" fill="#b3d9ff"/>
+  <circle cx="400" cy="250" r="100" fill="#80bfff"/>
+  <rect x="300" y="350" width="200" height="100" rx="10" fill="#4da6ff"/>
+  <text x="400" y="270" font-family="Arial" font-size="30" text-anchor="middle" fill="#ffffff">电子头虱梳</text>
+  <text x="400" y="400" font-family="Arial" font-size="20" text-anchor="middle" fill="#ffffff">产品主图</text>
+</svg>

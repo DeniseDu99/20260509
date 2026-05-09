@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Head Lice Removal Expert</title>
+    <!-- Google tag (gtag.js) --> 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S9SR60CCYT"></script> 
+    <script> 
+      window.dataLayer = window.dataLayer || []; 
+      function gtag(){dataLayer.push(arguments);} 
+      gtag('js', new Date()); 
+     
+      gtag('config', 'G-S9SR60CCYT'); 
+    </script>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Admin Dashboard</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">返回网站</a></li>
+                    <li><a href="index.html" class="active">控制面板</a></li>
+                    <li><a href="add-blog.html">添加博客</a></li>
+                    <li><a href="media.html">媒体管理</a></li>
+                    <li><a href="messages.html">留言管理</a></li>
+                    <li><a href="settings.html">网站设置</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Dashboard -->
+    <section class="admin-dashboard">
+        <div class="container">
+            <div class="section-header">
+                <h2>Admin Dashboard</h2>
+                <p>Manage your website content</p>
+            </div>
+            
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-blog"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Blog Posts</h3>
+                        <p>Manage your blog posts</p>
+                        <a href="add-blog.html" class="btn-primary">Add New Post</a>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Media</h3>
+                        <p>Manage your images and media files</p>
+                        <a href="media.html" class="btn-primary">Upload Media</a>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Settings</h3>
+                        <p>Configure website settings</p>
+                        <a href="settings.html" class="btn-primary">Edit Settings</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recent-posts">
+                <h3>Recent Blog Posts</h3>
+                <div class="post-list">
+                    <div class="post-item">
+                        <div class="post-title">Head Lice Prevention: 7 Tips to Protect Your Child from School Lice Infestations</div>
+                        <div class="post-date">October 15, 2023</div>
+                        <div class="post-actions">
+                            <a href="#" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                            <a href="#" class="delete-btn"><i class="fas fa-trash"></i> Delete</a>
+                        </div>
+                    </div>
+                    
+                    <div class="post-item">
+                        <div class="post-title">Electronic Lice Machine Usage Guide: Detailed Steps to Maximize Treatment Effectiveness</div>
+                        <div class="post-date">September 28, 2023</div>
+                        <div class="post-actions">
+                            <a href="#" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                            <a href="#" class="delete-btn"><i class="fas fa-trash"></i> Delete</a>
+                        </div>
+                    </div>
+                    
+                    <div class="post-item">
+                        <div class="post-title">5 Common Myths About Head Lice: Scientific Analysis and Truth</div>
+                        <div class="post-date">September 10, 2023</div>
+                        <div class="post-actions">
+                            <a href="#" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                            <a href="#" class="delete-btn"><i class="fas fa-trash"></i> Delete</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="add-blog.html" class="btn-primary">Add New Post</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Head Lice Removal Expert</h2>
+                    <p>Admin Dashboard</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Head Lice Removal Expert. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+</html>
